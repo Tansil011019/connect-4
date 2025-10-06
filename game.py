@@ -87,7 +87,7 @@ def main(first_player = None, second_player = None):
         if p1 is None:
             print("oops! you have entered a wrong bot name for p1")
             exit(1)
-        if isinstance(p1, EvaluatableBot):
+        if isinstance(p1, EvaluativeBot):
             p1.set_evaluator_type(p1_evaluator_type)
         print("Player 1 is set as a " + name_map[args.p1])
 
@@ -101,7 +101,7 @@ def main(first_player = None, second_player = None):
         if p2 is None:
             print("oops! you have entered a wrong bot name for p2")
             exit(1)
-        if isinstance(p2, EvaluatableBot):
+        if isinstance(p2, EvaluativeBot):
             p2.set_evaluator_type(p2_evaluator_type)
         print("Player 2 is set as a " + name_map[args.p2])
 

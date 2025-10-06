@@ -5,7 +5,7 @@ from .minimax import MiniMaxBot
 from .expectimax import ExpectiMaxBot
 from .montecarlo import MonteCarloBot
 from .evaluation import (
-    EvaluatableBot,
+    EvaluativeBot,
     DefaultEvaluator,
     FlatEvaluator
 )
@@ -17,7 +17,7 @@ __all__ = [
     'MiniMaxBot',
     'ExpectiMaxBot',
     'MonteCarloBot',
-    'EvaluatableBot',
+    'EvaluativeBot',
     'DefaultEvaluator',
     'FlatEvaluator'
 ]

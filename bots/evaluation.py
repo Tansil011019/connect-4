@@ -1,6 +1,6 @@
 from board import Board
 
-class EvaluatableBot:
+class EvaluativeBot:
 	def __init__(self, piece: int):
 		self.bot_piece = piece
 		if self.bot_piece == 1:

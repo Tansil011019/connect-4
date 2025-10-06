@@ -1,8 +1,8 @@
 import random
 import math
-from bots.evaluation import EvaluatableBot
+from bots.evaluation import EvaluativeBot
 
-class MiniMaxBot(EvaluatableBot):
+class MiniMaxBot(EvaluativeBot):
 	def __init__(self, piece, depth=5):
 		super().__init__(piece)
 		self.depth = depth
