@@ -1,8 +1,8 @@
 import random
 import math
-from bots.evaluation import Evaluation
+from bots.evaluation import EvaluatableBot
 
-class ExpectiMaxBot(Evaluation):
+class ExpectiMaxBot(EvaluatableBot):
 	def __init__(self, piece, depth=5):
 		super().__init__(piece)
 		self.depth = depth

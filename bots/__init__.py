@@ -4,6 +4,11 @@ from .onesteplook import OneStepLookAheadBot
 from .minimax import MiniMaxBot
 from .expectimax import ExpectiMaxBot
 from .montecarlo import MonteCarloBot
+from .evaluation import (
+    EvaluatableBot,
+    DefaultEvaluator,
+    FlatEvaluator
+)
 
 __all__ = [
     'Human',
@@ -11,5 +16,8 @@ __all__ = [
     'OneStepLookAheadBot',
     'MiniMaxBot',
     'ExpectiMaxBot',
-    'MonteCarloBot'
+    'MonteCarloBot',
+    'EvaluatableBot',
+    'DefaultEvaluator',
+    'FlatEvaluator'
 ]

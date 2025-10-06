@@ -1,11 +1,61 @@
-class Evaluation:
-	def __init__(self, piece):
+from board import Board
+
+class EvaluatableBot:
+	def __init__(self, piece: int):
+		self.bot_piece = piece
+		if self.bot_piece == 1:
+			self.opp_piece = 2
+		else:
+			self.opp_piece = 1
+		self.evaluator: Evaluator = DefaultEvaluator(piece)
+
+	def score_position(self, board: Board) -> float:
+		return self.evaluator.score_position(board)
+
+	def is_terminal_node(self, board: Board) -> bool:
+		"""
+		Is the board represents terminal node?
+
+		Args:
+			board: The current state of board to analyze
+
+		Returns:
+			Boolean.
+		"""
+		return (
+			board.winning_move(self.bot_piece)
+			or board.winning_move(self.opp_piece)
+			or len(board.get_valid_locations()) == 0
+		)
+	
+	def set_evaluator_type(self, evaluator_type: type):
+		if not issubclass(evaluator_type, Evaluator):
+			raise ValueError("Not an Evaluator.")
+		
+		self.evaluator = evaluator_type(self.bot_piece)
+
+class Evaluator:
+	def __init__(self, piece: int):
 		self.bot_piece = piece
 		if self.bot_piece == 1:
 			self.opp_piece = 2
 		else:
 			self.opp_piece = 1
 
+	def score_position(self, board: Board, bot_piece: int, ) -> float:
+		"""
+		Return the score position of board.
+
+		Args:
+			board: The current state of board to analyze
+
+		Returns:
+			Score. (generally float, but can be int)
+		"""
+
+		raise NotImplementedError
+
+class DefaultEvaluator(Evaluator):
 	def evaluate_window(self, board, window):
 		score = 0
 		if window.count(self.bot_piece) == 4:
@@ -56,5 +106,6 @@ class Evaluation:
 
 		return score
 
-	def is_terminal_node(self, board):
-		return board.winning_move(self.bot_piece) or board.winning_move(self.opp_piece) or len(board.get_valid_locations()) == 0
+class FlatEvaluator(Evaluator):
+	def score_position(self, board):
+		return 0.0

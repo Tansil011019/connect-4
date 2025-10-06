@@ -30,6 +30,10 @@ name_map = {
 
 board = Board(1)
 
+# Change your evaluation function here!
+p1_evaluator_type = DefaultEvaluator
+p2_evaluator_type = FlatEvaluator
+
 def str2bool(v):
     if isinstance(v, bool):
        return v
@@ -83,6 +87,8 @@ def main(first_player = None, second_player = None):
         if p1 is None:
             print("oops! you have entered a wrong bot name for p1")
             exit(1)
+        if isinstance(p1, EvaluatableBot):
+            p1.set_evaluator_type(p1_evaluator_type)
         print("Player 1 is set as a " + name_map[args.p1])
 
     if args.p2 is None or args.p2 == "human":
@@ -95,6 +101,8 @@ def main(first_player = None, second_player = None):
         if p2 is None:
             print("oops! you have entered a wrong bot name for p2")
             exit(1)
+        if isinstance(p2, EvaluatableBot):
+            p2.set_evaluator_type(p2_evaluator_type)
         print("Player 2 is set as a " + name_map[args.p2])
 
     print("\n")
