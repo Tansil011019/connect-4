@@ -90,7 +90,7 @@ class Node:
     def selection(self):
         # return child with largest UCT value
         uct_val = lambda x: x.wins / x.visits + np.sqrt(2 * np.log(self.visits) / x.visits)
-        return sorted(self.children, key = uct_val)[-1]
+        return max(self.children, key = uct_val)
 
     def expand(self, move, board):
         # return child when move is taken
