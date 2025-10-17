@@ -3,6 +3,8 @@ import sys
 
 #pygame version number and welcome message hidden.
 import os
+
+from bots.genetic_algorithm import GeneticAlgorithmBotFactory
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame
@@ -16,7 +18,8 @@ bot_map = {
     'onestep': OneStepLookAheadBot,
     'minimax': MiniMaxBot,
     'expectimax': ExpectiMaxBot,
-    'montecarlo': MonteCarloBot
+    'montecarlo': MonteCarloBot,
+    'ga': GeneticAlgorithmBotFactory()
 }
 
 name_map = {
@@ -25,7 +28,8 @@ name_map = {
     'onestep': 'One Step Look Ahead Bot',
     'minimax': 'MiniMax Bot',
     'expectimax': 'ExpectiMax Bot',
-    'montecarlo': 'Monte Carlo Tree Search Bot'
+    'montecarlo': 'Monte Carlo Tree Search Bot',
+    'ga': 'Genetic Algorithm Bot'
 }
 
 board = Board(1)

@@ -6,16 +6,47 @@ import numpy as np
 
 from board import Board
 from bots.evaluation import DefaultEvaluator
-from bots.onesteplook import OneStepLookAheadBot
 from bots.player import Player
-from bots.random import RandomBot
 
 class GeneticAlgorithmBotFactory:
     def __call__(self, *args, **kwds):
         return GeneticAlgorithmBot(*args, **kwds)
 
+def possible_moves_to_target(current_board: Board, target_board: Board, verbose: bool = False) -> list[int]:
+    curr_board_data = current_board.get_board()
+    target_board_data = target_board.get_board()
+    difference = curr_board_data != target_board_data
+    if np.all(~difference):
+        if verbose:
+            print("No difference")
+        
+        return []
+    
+    conflict_elements = difference & (curr_board_data != current_board.EMPTY)
+    if np.any(conflict_elements):
+        if verbose:
+            print("Conflict exists")
+        
+        return []
+
+    possible_cols: list[int] = []
+    for col in range(current_board.COLUMN_COUNT):
+        rows = np.where(difference[:, col])[0].tolist()
+        if len(rows) == 0:
+            continue
+
+        row = min(rows)
+        if target_board_data[row, col] == current_board.CURR_PLAYER:
+            possible_cols.append(col)
+
+    if len(possible_cols) == 0:
+        if verbose:
+            print("No possible move")
+        
+    return possible_cols
+
 class GeneticAlgorithmBot(Player):
-    def __init__(self, piece, seed: int = 120):
+    def __init__(self, piece, seed: int | None = None):
         super().__init__(piece)
         self.rng = random.Random()
         self.rng.seed(seed)
@@ -30,41 +61,15 @@ class GeneticAlgorithmBot(Player):
     def get_move(self, board, verbose: bool = False):
         solution = -1
         while solution == -1:
-            if self.target_board is None:
+            target_board = self.target_board
+            if target_board is None:
                 if verbose:
                     print("No target board")
                 self.update_best_individual(board)
                 continue
-                
-            curr_board_data = board.get_board()
-            target_board_data = self.target_board.get_board()
-            difference = curr_board_data != target_board_data
-            if np.all(~difference):
-                if verbose:
-                    print("No difference")
-                self.update_best_individual(board)
-                continue
-            
-            conflict_elements = difference & (curr_board_data != board.EMPTY)
-            if np.any(conflict_elements):
-                if verbose:
-                    print("Conflict exists")
-                self.update_best_individual(board)
-                continue
 
-            possible_cols: list[int] = []
-            for col in range(board.COLUMN_COUNT):
-                rows = np.where(difference[:, col])[0].tolist()
-                if len(rows) == 0:
-                    continue
-
-                row = min(rows)
-                if target_board_data[row, col] == board.CURR_PLAYER:
-                    possible_cols.append(col)
-
+            possible_cols = possible_moves_to_target(board, target_board, verbose=verbose)
             if len(possible_cols) == 0:
-                if verbose:
-                    print("No possible move")
                 self.update_best_individual(board)
                 continue
 
