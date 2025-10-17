@@ -42,7 +42,7 @@ class Evaluator:
 		else:
 			self.opp_piece = 1
 
-	def score_position(self, board: Board, bot_piece: int, ) -> float:
+	def score_position(self, board: Board) -> float:
 		"""
 		Return the score position of board.
 
