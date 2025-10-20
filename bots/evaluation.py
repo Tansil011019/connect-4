@@ -1,6 +1,7 @@
 from board import Board
+from bots.player import Player
 
-class EvaluativeBot:
+class EvaluativeBot(Player):
 	def __init__(self, piece: int):
 		self.bot_piece = piece
 		if self.bot_piece == 1:
@@ -109,3 +110,63 @@ class DefaultEvaluator(Evaluator):
 class FlatEvaluator(Evaluator):
 	def score_position(self, board):
 		return 0.0
+
+class Custom1Evaluator(Evaluator):
+	def evaluate_window(self, board, window):
+		score = 0
+		if window.count(self.bot_piece) == 4:
+			score += 100
+		elif window.count(self.bot_piece) == 3 and window.count(board.EMPTY) == 1:
+			score += 20
+		elif window.count(self.bot_piece) == 2 and window.count(board.EMPTY) == 2:
+			score += 4
+
+		return score
+
+	def score_position(self, board):
+		score = 0
+
+		## Score center column
+		center_array = [int(i) for i in list(board.get_board()[:, board.COLUMN_COUNT//2])]
+		center_count = center_array.count(self.bot_piece)
+		score += center_count * 9
+
+		## Score Horizontal
+		for r in range(board.ROW_COUNT):
+			row_array = [int(i) for i in list(board.get_board()[r,:])]
+			for c in range(board.COLUMN_COUNT-3):
+				window = row_array[c:c+board.WINDOW_LENGTH]
+				score += self.evaluate_window(board, window)
+
+		## Score Vertical
+		for c in range(board.COLUMN_COUNT):
+			col_array = [int(i) for i in list(board.get_board()[:,c])]
+			for r in range(board.ROW_COUNT-3):
+				window = col_array[r:r+board.WINDOW_LENGTH]
+				score += self.evaluate_window(board, window)
+
+		## Score positive sloped diagonal
+		for r in range(board.ROW_COUNT-3):
+			for c in range(board.COLUMN_COUNT-3):
+				window = [board.get_board()[r+i][c+i] for i in range(board.WINDOW_LENGTH)]
+				score += self.evaluate_window(board, window)
+
+		## Score negative sloped diagonal
+		for r in range(board.ROW_COUNT-3):
+			for c in range(board.COLUMN_COUNT-3):
+				window = [board.get_board()[r+3-i][c+i] for i in range(board.WINDOW_LENGTH)]
+				score += self.evaluate_window(board, window)
+
+		return score
+	
+class Custom2Evaluator(Evaluator):
+	def __init__(self, piece):
+		super().__init__(piece)
+		self.bot_evaluator = Custom1Evaluator(self.bot_piece)
+		self.opp_evaluator = Custom1Evaluator(self.opp_piece)
+
+	def score_position(self, board):
+		return (
+			self.bot_evaluator.score_position(board)
+			- self.opp_evaluator.score_position(board)
+		)
