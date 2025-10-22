@@ -70,7 +70,7 @@ class GeneticAlgorithmBot(EvaluativeBot):
         if len(tier_1_cols) > 0:
             return self.rng.choice(tier_1_cols)
         
-        tier_2_cols = [c for c in range(board.COLUMN_COUNT) if c not in worst_cols]
+        tier_2_cols = [c for c in range(board.COLUMN_COUNT) if c not in worst_cols and board.is_valid_location(c)]
         if len(tier_2_cols) > 0:
             return self.rng.choice(tier_2_cols)
         
@@ -92,7 +92,7 @@ class GeneticAlgorithmBot(EvaluativeBot):
                     removed_count += 1
                 else:
                     for col in local_possible_cols:
-                        if col not in possible_cols:
+                        if col not in possible_cols and board.is_valid_location(col):
                             possible_cols.append(col)
                     i += 1
 
@@ -118,7 +118,7 @@ class GeneticAlgorithmBot(EvaluativeBot):
                     removed_count += 1
                 else:
                     for col in local_possible_cols:
-                        if col not in possible_cols:
+                        if col not in possible_cols and board.is_valid_location(col):
                             possible_cols.append(col)
                     i += 1
 
@@ -153,7 +153,7 @@ class GeneticAlgorithmBot(EvaluativeBot):
             max_result: int = -1
     ):
         # Generate population
-        population: list[str] = [str(i) for i in range(board.COLUMN_COUNT)]
+        population: list[str] = [str(i) for i in range(board.COLUMN_COUNT) if board.is_valid_location(i)]
         while len(population) < self.population_size:
             # Generate single individual
             individual = ""
@@ -234,9 +234,10 @@ class GeneticAlgorithmBot(EvaluativeBot):
                     move = int(c)
                     local_board.drop_piece(move, local_board.CURR_PLAYER)
             except IndexError:
-                print(f"Warning: Cannot handle {best_individual} in this board:")
-                board.print_board()
-                print("(end of warning)")
+                if self.verbose:
+                    print(f"Warning: Cannot handle {best_individual} in this board:")
+                    board.print_board()
+                    print("(end of warning)")
             else:
                 local_board_list.append(local_board)
 
