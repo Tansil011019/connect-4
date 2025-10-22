@@ -39,7 +39,7 @@ board = Board(1)
 
 # Change your evaluation function here!
 p1_evaluator_type = DefaultEvaluator
-p2_evaluator_type = FlatEvaluator
+p2_evaluator_type = DefaultEvaluator
 
 def str2bool(v):
     if isinstance(v, bool):
