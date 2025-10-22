@@ -5,6 +5,7 @@ import sys
 import os
 
 from bots.genetic_algorithm import GeneticAlgorithmBotFactory
+from bots.simulated_annealing import SimulatedAnnealingBot
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame
@@ -19,7 +20,8 @@ bot_map = {
     'minimax': MiniMaxBot,
     'expectimax': ExpectiMaxBot,
     'montecarlo': MonteCarloBot,
-    'ga': GeneticAlgorithmBotFactory()
+    'ga': GeneticAlgorithmBotFactory(),
+    'sa': SimulatedAnnealingBot.factory(),
 }
 
 name_map = {
@@ -29,7 +31,8 @@ name_map = {
     'minimax': 'MiniMax Bot',
     'expectimax': 'ExpectiMax Bot',
     'montecarlo': 'Monte Carlo Tree Search Bot',
-    'ga': 'Genetic Algorithm Bot'
+    'ga': 'Genetic Algorithm Bot',
+    'sa': 'Simulated Annealing Bot',
 }
 
 board = Board(1)
