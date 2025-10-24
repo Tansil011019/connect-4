@@ -5,7 +5,7 @@ from typing import Callable
 
 from board import Board
 from bots.evaluation import DefaultEvaluator, EvaluativeBot
-from bots.utils import possible_moves_to_target
+from bots.utils import possible_block_moves_to_target, possible_moves_to_target
 
 class GeneticAlgorithmBotFactory:
     def __init__(
@@ -69,8 +69,10 @@ class GeneticAlgorithmBot(EvaluativeBot):
         if self.verbose:
             print("Best:")
             self.target_board_list[0].print_board()
+            print(best_cols)
             print("Worst:")
             self.anti_target_board_list[0].print_board()
+            print(worst_cols)
 
         tier_1_cols = [c for c in best_cols if c not in worst_cols]
         if len(tier_1_cols) > 0:
@@ -114,11 +116,22 @@ class GeneticAlgorithmBot(EvaluativeBot):
             i = 0
             removed_count = 0
             while i < len(self.anti_target_board_list):
-                local_possible_cols = possible_moves_to_target(
+                local_possible_cols: list[int] = []
+
+                anti_local_possible_cols: list[int] | None = possible_block_moves_to_target(
                     board,
                     self.anti_target_board_list[i],
                     verbose=self.verbose
                 )
+
+                if anti_local_possible_cols is not None:
+                    for col in range(board.COLUMN_COUNT):
+                        if not board.is_valid_location(col):
+                            continue
+
+                        if col not in anti_local_possible_cols:
+                            local_possible_cols.append(col)
+
                 if len(local_possible_cols) == 0:
                     self.anti_target_board_list.pop(i)
                     removed_count += 1
