@@ -11,9 +11,9 @@ class GeneticAlgorithmBotFactory:
     def __init__(
             self,
             seed: int | None = None,
-            population_size: int = 100,
+            population_size: int = 1000,
             mutation_rate: float = 0.1,
-            timeout_duration_seconds: float = 1.0,
+            timeout_duration_seconds: float = 2.5,
             max_iteration: int = 10000,
             verbose: bool = False,
     ):
@@ -41,7 +41,7 @@ class GeneticAlgorithmBot(EvaluativeBot):
             seed: int | None = None,
             population_size: int = 100,
             mutation_rate: float = 0.1,
-            timeout_duration_seconds: float = 1.0,
+            timeout_duration_seconds: float = 2.5,
             max_iteration: int = 10000,
             verbose: bool = False
     ):
@@ -65,6 +65,12 @@ class GeneticAlgorithmBot(EvaluativeBot):
     def get_move(self, board):
         best_cols = self.get_possible_best_moves(board)
         worst_cols = self.get_possible_worst_moves(board)
+
+        if self.verbose:
+            print("Best:")
+            self.target_board_list[0].print_board()
+            print("Worst:")
+            self.anti_target_board_list[0].print_board()
 
         tier_1_cols = [c for c in best_cols if c not in worst_cols]
         if len(tier_1_cols) > 0:
@@ -153,12 +159,13 @@ class GeneticAlgorithmBot(EvaluativeBot):
             max_result: int = -1
     ):
         # Generate population
-        population: list[str] = [str(i) for i in range(board.COLUMN_COUNT) if board.is_valid_location(i)]
+        valid_start = [str(i) for i in range(board.COLUMN_COUNT) if board.is_valid_location(i)]
+        population: list[str] = []
         while len(population) < self.population_size:
             # Generate single individual
             individual = ""
             while (u := self.rng.random()) < 1 / (len(individual) + 1):
-                random_move = self.rng.randint(0, board.COLUMN_COUNT - 1)
+                random_move = self.rng.choice(valid_start)
                 individual += str(random_move)
             population.append(individual)
 
@@ -167,7 +174,7 @@ class GeneticAlgorithmBot(EvaluativeBot):
             local_board = board.copy_board()
             try:
                 for c in individual:
-                    if board.check_draw():
+                    if self.is_terminal_node(local_board):
                         break
 
                     random_move = int(c)
@@ -210,8 +217,8 @@ class GeneticAlgorithmBot(EvaluativeBot):
                     population_2.append(child)
 
                 population = population_2
+                iteration += 1
             
-            iteration += 1
             duration = time.perf_counter() - start_time
             if duration > self.timeout_duration_seconds or iteration == self.max_iteration:
                 timeout = True

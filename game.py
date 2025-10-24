@@ -4,6 +4,7 @@ import sys
 #pygame version number and welcome message hidden.
 import os
 
+from bots.evaluation import Custom2Evaluator
 from bots.genetic_algorithm import GeneticAlgorithmBotFactory
 from bots.simulated_annealing import SimulatedAnnealingBot
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
@@ -38,8 +39,8 @@ name_map = {
 board = Board(1)
 
 # Change your evaluation function here!
-p1_evaluator_type = DefaultEvaluator
-p2_evaluator_type = DefaultEvaluator
+p1_evaluator_type = Custom2Evaluator
+p2_evaluator_type = Custom2Evaluator
 
 def str2bool(v):
     if isinstance(v, bool):
