@@ -20,11 +20,32 @@ def run_tournament():
         name: {
             'win': 0,
             'loss': 0,
-            'draw': 0
+            'draw': 0,
+            'time_avg': 0,
+            'move_avg': 0
         } for name in BOT_NAMES
     }
 
     matchups = list(permutations(BOT_NAMES, 2))
+
+    tournament_result = {
+        f"{p1_name} vs {p2_name}": {
+            p1_name: {
+                'win': 0,
+                'loss': 0,
+                'draw': 0,
+                'time_avg': 0,
+                'move_avg': 0
+            },
+            p2_name: {
+                'win': 0,
+                'loss': 0,
+                'draw': 0,
+                'time_avg': 0,
+                'move_avg': 0
+            }
+        } for p1_name, p2_name in matchups
+    }
 
     total_games = len(matchups) * NUM_MATCHES
     game_count = 0
@@ -40,9 +61,10 @@ def run_tournament():
         p1_wins_matchup = 0
         p2_wins_matchup = 0
         draws_matchup = 0
+        tournament_keys = f"{p1_name} vs {p2_name}"
 
-        p1_full_name = name_map.get(p1_name, p1_name)
-        p2_full_name = name_map.get(p2_name, p2_name)
+        # p1_full_name = name_map.get(p1_name, p1_name)
+        # p2_full_name = name_map.get(p2_name, p2_name)
 
         print(f"Matchup: {p1_name} (P1) vs. {p2_name} (P2)")
         try:
@@ -59,6 +81,12 @@ def run_tournament():
             print(f"\nError creating bots {p1_name} or {p2_name}: {e}")
             sys.exit(1)
 
+        time_avg_p1 = 0
+        time_avg_p2 = 0
+
+        move_avg_p1 = 0
+        move_avg_p2 = 0
+
         for i in range(NUM_MATCHES):
             game_count += 1
 
@@ -67,15 +95,22 @@ def run_tournament():
             except Exception as e:
                 print(f"\nError running game {p1_name} vs {p2_name}: {e}")
                 winner_piece = -1
+                continue
             
             print(f"This is {winner_piece}")
             
-            if winner_piece == Board.PLAYER1_PIECE:
+            if winner_piece['winner'] == Board.PLAYER1_PIECE:
                 p1_wins_matchup += 1
-            elif winner_piece == Board.PLAYER2_PIECE:
+            elif winner_piece['winner'] == Board.PLAYER2_PIECE:
                 p2_wins_matchup += 1
-            elif winner_piece == 0: 
+            elif winner_piece['winner'] == 0: 
                 draws_matchup += 1
+
+            time_avg_p1 += winner_piece['time_p1']
+            time_avg_p2 += winner_piece['time_p2']
+
+            move_avg_p1 += winner_piece['moves_p1']
+            move_avg_p2 += winner_piece['moves_p2']
             
             print(f"Game {i+1}/{NUM_MATCHES} complete. (Overall progress: {game_count*100/total_games:.1f}%)", end="\r")
         
@@ -85,13 +120,33 @@ def run_tournament():
         results[p1_name]['win'] += p1_wins_matchup
         results[p1_name]['draw'] += draws_matchup
         results[p1_name]['loss'] += p2_wins_matchup
+        results[p1_name]['time_avg'] = time_avg_p1 / NUM_MATCHES
+        results[p1_name]['move_avg'] = move_avg_p1 / NUM_MATCHES
         
         results[p2_name]['win'] += p2_wins_matchup
         results[p2_name]['draw'] += draws_matchup
-        results[p2_name]['loss'] += p2_wins_matchup
+        results[p2_name]['loss'] += p1_wins_matchup
+        results[p2_name]['time_avg'] = time_avg_p2 / NUM_MATCHES
+        results[p2_name]['move_avg'] = move_avg_p2 / NUM_MATCHES
+
+
+        tournament_result[tournament_keys][p1_name]['win'] += p1_wins_matchup
+        tournament_result[tournament_keys][p1_name]['draw'] += draws_matchup
+        tournament_result[tournament_keys][p1_name]['loss'] += p2_wins_matchup
+        tournament_result[tournament_keys][p1_name]['time_avg'] = time_avg_p1 / NUM_MATCHES
+        tournament_result[tournament_keys][p1_name]['move_avg'] = move_avg_p1 / NUM_MATCHES
+
+        tournament_result[tournament_keys][p2_name]['win'] += p2_wins_matchup
+        tournament_result[tournament_keys][p2_name]['draw'] += draws_matchup
+        tournament_result[tournament_keys][p2_name]['loss'] += p1_wins_matchup
+        tournament_result[tournament_keys][p2_name]['time_avg'] = time_avg_p2 / NUM_MATCHES
+        tournament_result[tournament_keys][p2_name]['move_avg'] = move_avg_p2 / NUM_MATCHES
+
+    print("=" * 50)
+
 
     print("\n\n--- FINAL TOURNAMENT REPORT ---")
-    print(f"{'Bot':<28} | {'Wins':<6} | {'Losses':<6} | {'Draws':<6} | {'Total':<6}")
+    print(f"{'Bot':<30} | {'Wins':<6} | {'Losses':<6} | {'Draws':<6} | {'Total':<6} | {'Time':<6} | {'Moves':<6}")
     print("-" * 52)
 
     sorted_bots = sorted(BOT_NAMES, key=lambda name: results[name]['win'], reverse=True)
@@ -100,8 +155,21 @@ def run_tournament():
         r = results[bot_name]
         total = r['win'] + r['loss'] + r['draw']
         full_name = name_map.get(bot_name, bot_name)
-        print(f"{full_name:<28} | {r['win']:<6} | {r['loss']:<6} | {r['draw']:<6} | {total:<6}")
+        time_avg = r['time_avg']
+        move_avg = r['move_avg']
+        print(f"{full_name:<28} | {r['win']:<6} | {r['loss']:<6} | {r['draw']:<6} | {total:<6} | {time_avg:<6} | {move_avg:<6}")
     print("-" * 52)
+
+    for matches in tournament_result.keys():
+        print(f"Matchup: {matches}")
+        for bot_name in matches.split(' vs '):
+            full_name = name_map.get(bot_name, bot_name)         
+            r = tournament_result[matches][bot_name]
+            total = r['win'] + r['loss'] + r['draw']
+            time_avg = r['time_avg']
+            move_avg = r['move_avg']
+            print(f"{full_name:<28} | {r['win']:<6} | {r['loss']:<6} | {r['draw']:<6} | {total:<6} | {time_avg:<6} | {move_avg:<6}")
+        print("-" * 52)
 
 if __name__ == "__main__":
     run_tournament()

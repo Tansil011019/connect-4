@@ -106,13 +106,21 @@ def connect4(p1, p2, ui=True):
 			print("TIME: " + "{:.2f}".format(round(time_p2, 2)) + " seconds")
 			print("MOVES: "+ str(moves_count_p2))
 
+			result_return = {
+				'time_p1': time_p1,
+				'time_p2': time_p2,
+				'moves_p1': moves_count_p1,
+				'moves_p2': moves_count_p2,
+				'winner': -1
+			}
 			game_over = False
 			if win_1:
-				return board.PLAYER1_PIECE
+				result_return['winner'] = board.PLAYER1_PIECE
 			elif win_2:
-				return board.PLAYER2_PIECE
+				result_return['winner'] = board.PLAYER2_PIECE
 			else:
-				return 0
+				result_return['winner'] = 0
+			return result_return
 
 			# sys.exit()
 
