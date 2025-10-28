@@ -1,5 +1,5 @@
-# Connect 4 
-Connect 4 programmed in python using pygame.
+# Connect 4 (IF5150 variation)
+Connect 4 programmed in python using pygame, with some modifications.
 
 #### About the game: Connect 4
 Connect-Four is a two-player 6x7 board game where colored discs are dropped vertically down occupying the last available slot within that respective column by taking turns by the players. When we introduce so called "**Artificial intelligence**" into the game (the agent) we we need to equip the agent with knowledge regarding states, actions and goal (goal test) in order for the agent to achieve it's goal. 
@@ -24,7 +24,7 @@ The basic flow of the game can be represented like this:
 4. ExpectiMax Bot (`expectimax`)
 5. MonteCarlo Tree Search (`montecarlo`)
 
-#### Features in the game:
+#### Features in the game: (something new here)
 - can play in various game mode with UI 
 - can view performacne of algorithms with or without UI
 - ability to choose bots based on `CLI` args
@@ -33,6 +33,8 @@ The basic flow of the game can be represented like this:
     - `--p2`: To select Player 2 Bot.
     - `--ui`: Accepts a boolean value to hide UI incase of bot vs bot
     - `--bots`: To list all the Available Bots.
+- **(new)** can use simulated annealing (use `--p1=sa`) and genetic algorithm (use `--p2=ga`) 
+- **(new)** can do tournament for performance analysis (experimental, unstable for genetic algorithm): Please run `tournament.py`.
 
 # To run game on your machine:
 1. clone the repo: `git clone https://github.com/mukeshmk/cs7is2-ai-group-proj.git`
@@ -54,3 +56,8 @@ Basic game code taken from: [@KeithGalli](https://github.com/KeithGalli) from th
  [![](https://github.com/mukeshmk.png?size=50)](https://github.com/mukeshmk) | [![](https://github.com/Aishwarya2345.png?size=50)](https://github.com/Aishwarya2345) | [![](https://github.com/Manasimohan.png?size=50)](https://github.com/Manasimohan) | [![](https://github.com/jagadishr12.png?size=50)](https://github.com/jagadishr12) 
  --- | --- | --- | --- 
  Mukesh A | Aishwarya R | Manasi M N | Jagadish R
+
+Extended by Group 8 IF5150 Advanced Artificial Intelligence:
+- M. Abdi Haryadi. H (23525019)
+- Versa Syahputra Santo (23525041)
+- Wilson Tansil (23525060)
