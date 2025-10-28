@@ -18,7 +18,7 @@ EVALUATOR_TYPE = (p1_evaluator_default_type, p2_evaluator_type)
 def run_comparison():
 
     tournament_result = {
-        f"{name}_default vd {name}_custom": {
+        f"{name}_default vs {name}_custom": {
             f"{name}_default": {
                 'win': 0,
                 'loss': 0,
