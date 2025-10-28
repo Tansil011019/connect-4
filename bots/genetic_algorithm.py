@@ -63,8 +63,15 @@ class GeneticAlgorithmBot(EvaluativeBot):
         self.anti_target_board_list: list[Board] = []
 
     def get_move(self, board):
-        best_cols = self.get_possible_best_moves(board)
-        worst_cols = self.get_possible_worst_moves(board)
+        try:
+            best_cols = self.get_possible_best_moves(board)
+            worst_cols = self.get_possible_worst_moves(board)
+        except ValueError:
+            if self.verbose:
+                print("Cannot handle this board (return random move instead):")
+                board.print_board()
+            
+            return self.rng.choices([c for c in range(board.COLUMN_COUNT) if board.is_valid_location(c)])
 
         if self.verbose:
             print("Best:")
@@ -261,7 +268,9 @@ class GeneticAlgorithmBot(EvaluativeBot):
             else:
                 local_board_list.append(local_board)
 
-        assert len(local_board_list) > 0
+        if len(local_board_list) == 0:
+            raise ValueError("Unexpected state")
+        
         return local_board_list
     
 if __name__ == "__main__":
