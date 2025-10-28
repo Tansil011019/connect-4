@@ -45,14 +45,14 @@ class ExpectiMaxBot(EvaluativeBot):
 				b_copy = board.copy_board()
 				b_copy.drop_piece(col, self.opp_piece)
 				new_score = self.expectimax(b_copy, depth-1, alpha, beta, True)[1]
+				value += new_score
 
-				if new_score <= value:
-					value = new_score
-					column = col
+			if len(valid_locations) > 0:
+				value = value / len(valid_locations)
 
-				beta = math.floor(value/len(valid_locations))
-				if alpha >= beta:
-					break
+			print(f"Current depth: {depth}")
+			
+
 			return column, value
 
 	def get_move(self, board):
