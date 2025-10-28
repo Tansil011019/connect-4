@@ -11,16 +11,16 @@ except ImportError as e:
     print(f"Error importing project files: {e}")
     sys.exit(1)
 
-NUM_MATCHES = 50
+NUM_MATCHES = 1
 BOT_NAMES = [name for name in bot_map.keys() if name != 'human']
 EVALUATOR_TYPE = (p1_evaluator_type, p2_evaluator_type)
 
 def run_tournament():
     results = {
         name: {
-            'wins': 0,
-            'losses': 0,
-            'draws': 0
+            'win': 0,
+            'loss': 0,
+            'draw': 0
         } for name in BOT_NAMES
     }
 
