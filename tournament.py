@@ -36,24 +36,27 @@ def run_tournament():
     print(f"Total games: {total_games}")
     print("=" * 50)
 
-    for p1, p2 in matchups:
+    for p1_name, p2_name in matchups:
         p1_wins_matchup = 0
         p2_wins_matchup = 0
         draws_matchup = 0
 
-        print(f"Matchup: {p1} (P1) vs. {p2} (P2)")
+        p1_full_name = name_map.get(p1_name, p1_name)
+        p2_full_name = name_map.get(p2_name, p2_name)
+
+        print(f"Matchup: {p1_name} (P1) vs. {p2_name} (P2)")
         try:
-            p1_class = bot_map[p1]
+            p1_class = bot_map[p1_name]
             p1 = p1_class(Board.PLAYER1_PIECE)
             if isinstance(p1, EvaluativeBot):
                 p1.set_evaluator_type(EVALUATOR_TYPE[0])
 
-            p2_class = bot_map[p2]
+            p2_class = bot_map[p2_name]
             p2 = p2_class(Board.PLAYER2_PIECE)
             if isinstance(p2, EvaluativeBot):
                 p2.set_evaluator_type(EVALUATOR_TYPE[1])
         except Exception as e:
-            print(f"\nError creating bots {p1} or {p2}: {e}")
+            print(f"\nError creating bots {p1_name} or {p2_name}: {e}")
             sys.exit(1)
 
         for i in range(NUM_MATCHES):
@@ -62,7 +65,7 @@ def run_tournament():
             try:
                 winner_piece = connect4(p1, p2, ui=False)
             except Exception as e:
-                print(f"\nError running game {p1} vs {p2}: {e}")
+                print(f"\nError running game {p1_name} vs {p2_name}: {e}")
                 winner_piece = -1
             
             print(f"This is {winner_piece}")
@@ -76,16 +79,16 @@ def run_tournament():
             
             print(f"Game {i+1}/{NUM_MATCHES} complete. (Overall progress: {game_count*100/total_games:.1f}%)", end="\r")
         
-        print(f"Matchup Result: {p1} wins: {p1_wins_matchup} | {p2} wins: {p2_wins_matchup} | Draws: {draws_matchup}")
+        print(f"Matchup Result: {p1_name} wins: {p1_wins_matchup} | {p2_name} wins: {p2_wins_matchup} | Draws: {draws_matchup}")
         print("-" * 20)
 
-        results[p1]['win'] += p1_wins_matchup
-        results[p1]['draw'] += draws_matchup
-        results[p1]['loss'] += p2_wins_matchup
+        results[p1_name]['win'] += p1_wins_matchup
+        results[p1_name]['draw'] += draws_matchup
+        results[p1_name]['loss'] += p2_wins_matchup
         
-        results[p2]['win'] += p2_wins_matchup
-        results[p2]['draw'] += draws_matchup
-        results[p2]['loss'] += p1_wins_matchup
+        results[p2_name]['win'] += p2_wins_matchup
+        results[p2_name]['draw'] += draws_matchup
+        results[p2_name]['loss'] += p2_wins_matchup
 
     print("\n\n--- FINAL TOURNAMENT REPORT ---")
     print(f"{'Bot':<28} | {'Wins':<6} | {'Losses':<6} | {'Draws':<6} | {'Total':<6}")
