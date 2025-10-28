@@ -41,15 +41,15 @@ def check_win(piece):
 			gb.write_on_board("PLAYER " + str(piece) + " WINS!", PLAYER_COLOUR[piece - 1], 350, 50, 70, True)
 			gb.update_gboard()
 		print("\nPLAYER " + str(piece) + " WINS!")
-		return True
+		return (True, True)
 	
 	if board.check_draw():
 		if graphics:
 			gb.write_on_board("IT'S A TIE!", gb.LIGHTBLUE, 350, 50, 70, True)
 			gb.update_gboard()
 		print("\n IT'S A TIE!")
-		return True
-	return False
+		return (True, False)
+	return (False, False)
 
 def connect4(p1, p2, ui=True):
 	global game_over, board, gb, graphics
@@ -77,7 +77,7 @@ def connect4(p1, p2, ui=True):
 				board.drop_piece(col, board.PLAYER1_PIECE)
 				moves_count_p1 += 1
 				next_turn()
-				game_over = check_win(board.PLAYER1_PIECE)
+				game_over, win_1 = check_win(board.PLAYER1_PIECE)
 		end = time.perf_counter()
 
 		time_p1 += (end - start)
@@ -91,7 +91,7 @@ def connect4(p1, p2, ui=True):
 				board.drop_piece(col, board.PLAYER2_PIECE)
 				moves_count_p2 += 1
 				next_turn()
-				game_over = check_win(board.PLAYER2_PIECE)
+				game_over, win_2 = check_win(board.PLAYER2_PIECE)
 		end = time.perf_counter()
 
 		time_p2 += (end - start)
@@ -106,7 +106,15 @@ def connect4(p1, p2, ui=True):
 			print("TIME: " + "{:.2f}".format(round(time_p2, 2)) + " seconds")
 			print("MOVES: "+ str(moves_count_p2))
 
-			sys.exit()
+			game_over = False
+			if win_1:
+				return board.PLAYER1_PIECE
+			elif win_2:
+				return board.PLAYER2_PIECE
+			else:
+				return 0
+
+			# sys.exit()
 
 if __name__ == "__main__":
 	print()

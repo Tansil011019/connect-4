@@ -50,9 +50,6 @@ class ExpectiMaxBot(EvaluativeBot):
 			if len(valid_locations) > 0:
 				value = value / len(valid_locations)
 
-			print(f"Current depth: {depth}")
-			
-
 			return column, value
 
 	def get_move(self, board):
