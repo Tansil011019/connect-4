@@ -170,3 +170,15 @@ class Custom2Evaluator(Evaluator):
 			self.bot_evaluator.score_position(board)
 			- self.opp_evaluator.score_position(board)
 		)
+	
+class Default2Evaluator(Evaluator):
+	def __init__(self, piece):
+		super().__init__(piece)
+		self.bot_evaluator = DefaultEvaluator(self.bot_piece)
+		self.opp_evaluator = DefaultEvaluator(self.opp_piece)
+
+	def score_position(self, board):
+		return (
+			self.bot_evaluator.score_position(board)
+			- self.opp_evaluator.score_position(board)
+		)
